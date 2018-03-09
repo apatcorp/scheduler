@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.controlsfx.control.MasterDetailPane?>
+<?import custom.CustomDatePicker?>
+
+<BorderPane maxHeight="Infinity" maxWidth="Infinity" minHeight="0" minWidth="0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="NewDailyRoutineController">
+   <center>
+      <MasterDetailPane dividerPosition="0.2" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+       <VBox BorderPane.alignment="CENTER">
+           <HBox alignment="CENTER" style="-fx-background-color: #20b2aa;">
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="New Daily Routine">
+                   <font>
+                       <Font size="20.0"/>
+                   </font>
+               </Text>
+           </HBox>
+           <HBox alignment="BASELINE_LEFT">
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dates:">
+                   <HBox.margin>
+                       <Insets bottom="10.0" left="10.0" top="10.0"/>
+                   </HBox.margin>
+               </Text>
+               <CustomDatePicker fx:id="datePicker">
+                   <HBox.margin>
+                       <Insets bottom="10.0" left="50.0" top="10.0"/>
+                   </HBox.margin>
+               </CustomDatePicker>
+           </HBox>
+       </VBox>
+   </top>
+</BorderPane>
