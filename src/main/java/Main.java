@@ -5,11 +5,10 @@ import javafx.stage.Stage;
 
 public class Main extends Application{
     public static Scene scene;
-    private ScreenHandler screenHandler;
 
     public void start(Stage primaryStage) {
 
-        screenHandler = ScreenHandler.getInstance();
+        ScreenHandler screenHandler = ScreenHandler.getInstance();
         screenHandler.add("Main", "fxml/main_scene_view.fxml");
         screenHandler.add("AppointmentDetails", "fxml/appointment_details_view.fxml");
         screenHandler.add("NewDailyRoutine", "fxml/new_daily_routines_view.fxml");

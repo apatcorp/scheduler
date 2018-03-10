@@ -4,19 +4,20 @@ import javafx.scene.control.DatePicker;
 
 public class CustomDatePicker extends DatePicker {
 
-    public boolean selectedDate = false;
+    private boolean dateSelected = false;
 
     @Override
     public void hide() {
-        if (!selectedDate) {
+        if (!dateSelected) {
             super.hide();
-        } else {
-
         }
     }
 
-    @Override
-    public void show() {
-        super.show();
+    public boolean isDateSelected() {
+        return dateSelected;
+    }
+
+    public void setDateSelected(boolean dateSelected) {
+        this.dateSelected = dateSelected;
     }
 }

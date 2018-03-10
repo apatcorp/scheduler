@@ -1,5 +1,3 @@
-import javafx.beans.property.ObjectProperty;
-
 import java.io.Serializable;
 import java.util.List;
 
