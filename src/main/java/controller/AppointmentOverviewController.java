@@ -1,19 +1,31 @@
+package controller;
+
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
+import com.calendarfx.view.DateControl;
 import com.calendarfx.view.page.WeekPage;
+import com.calendarfx.view.popover.EntryPopOverContentPane;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import custom.CustomContextMenu;
+import custom.CustomEntryPopover;
+import custom.NewAppointmentEntry;
+import data_structures.Appointment;
+import data_structures.AppointmentProperty;
+import data_structures.DailyRoutine;
+import database.SchedulerDB;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
-import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Popup;
-import org.controlsfx.control.MasterDetailPane;
+import javafx.util.Callback;
+import main.Main;
 import org.controlsfx.control.PopOver;
+import utility.ScreenHandler;
 
 import java.net.URL;
 import java.util.*;
@@ -33,7 +45,7 @@ public class AppointmentOverviewController extends Controller implements Initial
         weekPage.getCalendarSources().remove(0);
 
         // create new calendar
-        Calendar calendar = new Calendar("Appointment");
+        Calendar calendar = new Calendar("data_structures.Appointment");
         calendar.setShortName("App");
         calendar.setStyle(Calendar.Style.STYLE2);
 
@@ -43,7 +55,7 @@ public class AppointmentOverviewController extends Controller implements Initial
             List<Appointment> appointments = new ArrayList<>(dailyRoutine.getAppointments().values());
             // create new appointment entry for each appointment
             for (Appointment appointment: appointments) {
-                Entry<?> appointmentEntry = new NewAppointmentEntry(appointment).createNewAppointmentEntry();
+                Entry<AppointmentProperty> appointmentEntry = new NewAppointmentEntry(appointment);
                 calendar.addEntry(appointmentEntry);
             }
         }
@@ -54,23 +66,29 @@ public class AppointmentOverviewController extends Controller implements Initial
         weekPage.getCalendarSources().add(calendarSource);
 
         // set create entry factory callback
-        weekPage.setEntryFactory(param -> new NewAppointmentEntry(param.getZonedDateTime()).createNewAppointmentEntry());
+        weekPage.setEntryFactory(param -> new NewAppointmentEntry(param.getZonedDateTime()));
         weekPage.setDefaultCalendarProvider(param -> calendar);
         // set custom popover on double click factory callback
-        weekPage.setEntryDetailsPopOverContentCallback(param -> new EntryPopover(param.getEntry()));
+        weekPage.setEntryDetailsPopOverContentCallback(param -> new CustomEntryPopover(param.getEntry(), param.getPopOver()));
 
         // set custom context menus on right click
-        weekPage.setContextMenuCallback(param -> new CustomContextMenu(param.getZonedDateTime(), param.getCalendar()));
+        //weekPage.setContextMenuCallback(param -> new CustomContextMenu(param.getZonedDateTime(), param.getCalendar()));
 
         newAppointment.setOnAction(event -> {
             PopOver popOver = new PopOver();
-            popOver.setAnimated(true);
-            BorderPane borderPane = (BorderPane)ScreenHandler.getInstance().getScreenInfo("NewDailyRoutine").getPane();
-            Controller controller = ScreenHandler.getInstance().getScreenInfo("NewDailyRoutine").getController();
+            ScreenHandler.ScreenInfo screenInfo = ScreenHandler.getInstance().getScreenInfo("NewDailyRoutine");
+            BorderPane borderPane = (BorderPane)screenInfo.getPane();
+            Controller controller = screenInfo.getController();
             controller.setup();
 
-            popOver.setContentNode(borderPane);
+            popOver.setAnimated(true);
             popOver.setArrowSize(0);
+            popOver.setTitle("New data_structures.Appointment");
+            popOver.setCloseButtonEnabled(true);
+            popOver.setHeaderAlwaysVisible(true);
+            popOver.setDetached(true);
+
+            popOver.setContentNode(borderPane);
             popOver.show(Main.scene.getWindow());
         });
     }

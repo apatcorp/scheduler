@@ -1,3 +1,6 @@
+package utility;
+
+import controller.Controller;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 
@@ -18,7 +21,7 @@ public class ScreenHandler {
 
     public void add(String name, String url) {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(url));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(url));
         try {
             fxmlLoader.setClassLoader(getClass().getClassLoader());
             ScreenInfo<? extends Controller> screenInfo = new ScreenInfo<>(fxmlLoader.load(), fxmlLoader.getController());
@@ -36,7 +39,7 @@ public class ScreenHandler {
         return screenInfoMap.getOrDefault(name, null);
     }
 
-    static class ScreenInfo<T extends Controller> {
+    public static class ScreenInfo<T extends Controller> {
         private Pane pane;
         private T controller;
 

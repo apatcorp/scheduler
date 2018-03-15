@@ -1,6 +1,13 @@
+package utility;
+
+import data_structures.Appointment;
+import data_structures.AppointmentDate;
+import data_structures.AppointmentTime;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -11,9 +18,9 @@ import java.util.Locale;
  * Created by Arrigo on 27.02.2018.
  */
 
-class Utility {
+public class Utility {
 
-    private static final String TAG = "Utility";
+    private static final String TAG = "utility.Utility";
     private static final String KEY = "sharedPreferenceKey";
 
 
@@ -50,6 +57,10 @@ class Utility {
         calendar.set(Calendar.DATE, appointmentDate.getDate());
 
         return getDocumentIDFromDate(calendar.getTime());
+    }
+
+    public static LocalTime appointmentTimeToLocalTime (AppointmentTime appointmentTime) {
+        return LocalTime.of(appointmentTime.getHour(), appointmentTime.getMinute(), 0, 0);
     }
 
     public static String getDocumentIDFromDate(Date date) {

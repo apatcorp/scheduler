@@ -1,3 +1,14 @@
+package data_structures;
+
+import com.google.firebase.database.Exclude;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -60,7 +71,7 @@ public class Appointment implements Serializable {
 
     @Override
     public String toString() {
-        return "Appointment{" +
+        return "data_structures.Appointment{" +
                 "appointmentTitle='" + appointmentTitle + '\'' +
                 ", appointmentDate=" + appointmentDate.toString() +
                 ", appointmentTime=" + appointmentTime.toString() +

@@ -1,3 +1,5 @@
+package database;
+
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
@@ -11,7 +13,7 @@ import java.io.InputStream;
 public class SchedulerDB {
 
     private static Firestore db;
-    static final String DB_NAME = "scheduler-bfb8b";
+    public static final String DB_NAME = "scheduler-bfb8b";
 
     public static Firestore getDB () {
 

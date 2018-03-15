@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.calendarfx.view.YearMonthView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.MasterDetailPane?>
 
-<BorderPane maxHeight="Infinity" maxWidth="Infinity" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="NewDailyRoutineController">
+<BorderPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NewDailyRoutineController">
    <center>
-      <MasterDetailPane dividerPosition="0.2" BorderPane.alignment="CENTER" />
+      <MasterDetailPane fx:id="masterDetailPane" dividerPosition="0.2" BorderPane.alignment="CENTER" />
    </center>
    <top>
        <VBox BorderPane.alignment="CENTER">
-           <HBox alignment="CENTER" style="-fx-background-color: #20b2aa;" VBox.vgrow="ALWAYS">
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="New Daily Routine">
-                   <font>
-                       <Font size="20.0" />
-                   </font>
-               </Text>
-           </HBox>
            <HBox alignment="BASELINE_LEFT">
             <Accordion HBox.hgrow="ALWAYS">
               <panes>
-                <TitledPane animated="false" text="Date Selection">
-                     <content>
-                        <VBox>
-                           <children>
-                              <YearMonthView fx:id="datePicker" enableHyperlinks="false" showWeekNumbers="false" VBox.vgrow="ALWAYS" />
-                           </children>
-                        </VBox>
-                     </content>
+                  <TitledPane animated="false" text="Date Selection">
+                      <VBox>
+                          <YearMonthView fx:id="datePicker" enableHyperlinks="false" showWeekNumbers="false" VBox.vgrow="ALWAYS" />
+                      </VBox>
                   </TitledPane>
               </panes>
             </Accordion>
+            <VBox.margin>
+               <Insets bottom="10.0" top="10.0" />
+            </VBox.margin>
+           </HBox>
+           <HBox alignment="CENTER_LEFT">
+               <padding>
+                   <Insets bottom="10.0" left="10.0" />
+               </padding>
+               <Button fx:id="newAppointment" mnemonicParsing="false" text="New Appointment" />
            </HBox>
        </VBox>
    </top>

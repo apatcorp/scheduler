@@ -8,31 +8,21 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AppointmentOverviewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AppointmentOverviewController">
    <top>
-      <VBox BorderPane.alignment="CENTER">
-         <children>
-            <MenuBar>
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem fx:id="newAppointment" mnemonicParsing="false" text="New Appointment" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </children>
-      </VBox>
+       <VBox BorderPane.alignment="CENTER">
+           <MenuBar>
+               <Menu mnemonicParsing="false" text="File">
+                   <MenuItem fx:id="newAppointment" mnemonicParsing="false" text="New Appointment" />
+               </Menu>
+               <Menu mnemonicParsing="false" text="Edit">
+                   <MenuItem mnemonicParsing="false" text="Delete" />
+               </Menu>
+               <Menu mnemonicParsing="false" text="Help">
+                   <MenuItem mnemonicParsing="false" text="About" />
+               </Menu>
+           </MenuBar>
+       </VBox>
    </top>
    <center>
       <WeekPage fx:id="weekPage" selectionMode="SINGLE" BorderPane.alignment="CENTER">

@@ -1,3 +1,5 @@
+package custom;
+
 import com.calendarfx.view.YearMonthView;
 
 import java.time.LocalDate;
@@ -7,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class CustomDateCell extends YearMonthView.DateCell {
+public class CustomDateCell extends YearMonthView.DateCell {
 
     private boolean selected;
 
@@ -20,7 +22,7 @@ class CustomDateCell extends YearMonthView.DateCell {
     private static List<LocalDate> selectedDates = new ArrayList<>();
     private static List<CustomDateCell> customDateCells = new ArrayList<>();
 
-    CustomDateCell(LocalDate localDate) {
+    public CustomDateCell(LocalDate localDate) {
         // not selected by default
         selected = false;
 
@@ -38,9 +40,7 @@ class CustomDateCell extends YearMonthView.DateCell {
         currentStyle = standardStyle;
 
         // define on mouse clicked on cell event
-        setOnMouseClicked(event -> {
-            onDateCellClicked();
-        });
+        setOnMouseClicked(event -> onDateCellClicked());
 
         // set the date and the style of the cell
         setDate(localDate);
@@ -94,8 +94,8 @@ class CustomDateCell extends YearMonthView.DateCell {
         selectedDates.clear();
         customDateCells.forEach(customDateCell -> {
             customDateCell.selected = false;
-            customDateCell.currentStyle = standardStyle;
-            customDateCell.setStyle(currentStyle);
+            customDateCell.currentStyle = customDateCell.standardStyle;
+            customDateCell.setStyle(customDateCell.currentStyle);
         });
 
         startDate = endDate = null;
@@ -105,7 +105,7 @@ class CustomDateCell extends YearMonthView.DateCell {
         selectedDates.clear();
 
         customDateCells.forEach(customDateCell -> {
-            customDateCell.currentStyle = customDateCell.getDate().equals(startDate) || customDateCell.getDate().equals(endDate) ? selectedStyle : standardStyle;
+            customDateCell.currentStyle = customDateCell.getDate().equals(startDate) || customDateCell.getDate().equals(endDate) ? customDateCell.selectedStyle : customDateCell.standardStyle;
             customDateCell.setStyle(customDateCell.currentStyle);
         });
     }
@@ -118,7 +118,7 @@ class CustomDateCell extends YearMonthView.DateCell {
         }
 
         selectedDates.addAll(Stream.iterate(startDate, date -> date.plusDays(1)).limit(ChronoUnit.DAYS.between(startDate, endDate) + 1).collect(Collectors.toList()));
-        System.out.println(selectedDates);
+        //System.out.println(selectedDates);
 
         customDateCells.forEach(customDateCell -> {
             customDateCell.currentStyle = selectedDates.contains(customDateCell.getDate()) &&

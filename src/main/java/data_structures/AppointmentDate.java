@@ -1,3 +1,7 @@
+package data_structures;
+
+import utility.Utility;
+
 import java.io.Serializable;
 
 /**

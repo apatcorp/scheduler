@@ -1,6 +1,9 @@
+package main;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import utility.ScreenHandler;
 
 
 public class Main extends Application{
@@ -12,6 +15,7 @@ public class Main extends Application{
         screenHandler.add("Main", "fxml/main_scene_view.fxml");
         screenHandler.add("AppointmentDetails", "fxml/appointment_details_view.fxml");
         screenHandler.add("NewDailyRoutine", "fxml/new_daily_routines_view.fxml");
+        screenHandler.add("NewAppointmentDetail", "fxml/new_appointment_detail_view.fxml");
 
         scene = new Scene(screenHandler.getScreenInfo("Main").getPane(), 1280, 800);
 

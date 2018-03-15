@@ -1,10 +1,8 @@
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+package data_structures;
 
-import java.beans.Transient;
+import utility.Utility;
+
 import java.io.Serializable;
-import java.time.LocalTime;
 
 /**
  * Created by Arrigo on 27.02.2018.
