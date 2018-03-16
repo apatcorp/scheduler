@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class AppointmentProperty {
 
@@ -28,6 +29,19 @@ public class AppointmentProperty {
         localTime.setValue(localTimeTmp);
 
         detailList = FXCollections.observableList(appointment.getAppointmentDetails());
+    }
+
+    public AppointmentProperty (String _title, LocalDate _localDate, LocalTime _localTime, List<String> details) {
+        title = new SimpleStringProperty();
+        localDate = new SimpleObjectProperty<>();
+        localTime = new SimpleObjectProperty<>();
+
+        title.setValue(_title);
+
+        localDate.setValue(_localDate);
+        localTime.setValue(_localTime);
+
+        detailList = FXCollections.observableList(details);
     }
 
     public String getTitleProperty() {

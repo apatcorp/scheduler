@@ -1,13 +1,9 @@
 package custom;
 
 import com.calendarfx.model.Entry;
-import com.calendarfx.view.DateControl;
 import com.calendarfx.view.popover.PopOverContentPane;
 import com.calendarfx.view.popover.PopOverTitledPane;
 import controller.AppointmentDetailsController;
-import controller.Controller;
-import data_structures.Appointment;
-import data_structures.AppointmentProperty;
 import javafx.scene.layout.Pane;
 import org.controlsfx.control.PopOver;
 import utility.ScreenHandler;

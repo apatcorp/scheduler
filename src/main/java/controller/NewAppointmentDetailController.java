@@ -1,15 +1,14 @@
 package controller;
 
 import com.calendarfx.view.TimeField;
-import data_structures.Appointment;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.calendarfx.view.YearMonthView;
+import data_structures.AppointmentProperty;
+import data_structures.DailyRoutineWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldListCell;
-import utility.Utility;
 
 public class NewAppointmentDetailController extends Controller {
 
@@ -20,27 +19,30 @@ public class NewAppointmentDetailController extends Controller {
     public TimeField timeEditText;
 
     @FXML
+    YearMonthView dateField;
+
+    @FXML
     public ListView<String> detailList;
 
     @FXML
     public Button addDetailButton;
 
-    Appointment appointment;
+    private DailyRoutineWrapper dailyRoutineWrapper = null;
 
-    @Override
-    public void setup(Appointment appointment) {
-        super.setup();
+    public void setup(DailyRoutineWrapper _dailyRoutineWrapper) {
+        if (dailyRoutineWrapper != null)
+            reset();
 
-        this.appointment = appointment;
+        dailyRoutineWrapper = _dailyRoutineWrapper;
 
-        titleEditText.setText(this.appointment.getAppointmentTitle());
+        System.out.println(dailyRoutineWrapper.toString());
 
-        timeEditText.setValue(Utility.appointmentTimeToLocalTime(this.appointment.getAppointmentTime()));
+        titleEditText.textProperty().bindBidirectional(dailyRoutineWrapper.getAppointmentProperty().titleProperty());
+        timeEditText.valueProperty().bindBidirectional(dailyRoutineWrapper.getAppointmentProperty().localTimeObjectProperty());
+        dateField.setCellFactory(param -> new NewDailyRoutineController.DateCellCustom(dateField, dailyRoutineWrapper.getLocalDateList()));
 
         detailList.setCellFactory(TextFieldListCell.forListView());
-        ObservableList<String> details = FXCollections.observableList(appointment.getAppointmentDetails());
-        detailList.setItems(details);
-        detailList.layout();
+        detailList.setItems(dailyRoutineWrapper.getAppointmentProperty().getDetailListProperty());
 
         addDetailButton.setOnAction(event -> {
             detailList.getItems().add("");
@@ -49,4 +51,10 @@ public class NewAppointmentDetailController extends Controller {
             detailList.edit(detailList.getItems().size() - 1);
         });
     }
+
+    private void reset () {
+        titleEditText.textProperty().unbindBidirectional(dailyRoutineWrapper.getAppointmentProperty().titleProperty());
+        timeEditText.valueProperty().unbindBidirectional(dailyRoutineWrapper.getAppointmentProperty().localTimeObjectProperty());
+    }
+
 }

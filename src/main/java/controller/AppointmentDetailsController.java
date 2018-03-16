@@ -2,18 +2,18 @@ package controller;
 
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.TimeField;
-import com.calendarfx.view.print.TimeRangeField;
 import data_structures.AppointmentProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.input.MouseButton;
+import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AppointmentDetailsController extends Controller {
 
@@ -21,10 +21,10 @@ public class AppointmentDetailsController extends Controller {
     TextField titleField;
 
     @FXML
-    TimeField timeClock;
+    TimeField timeField;
 
     @FXML
-    TimeRangeField dateField;
+    DatePicker dateField;
 
     @FXML
     ListView<String> detailList;
@@ -32,43 +32,55 @@ public class AppointmentDetailsController extends Controller {
     @FXML
     Button addButton;
 
+    @FXML
+    Button deleteButton;
+
     private Entry<?> appointmentPropertyEntry;
     private AppointmentProperty appointment;
 
+    private int selectedItemIndex = -1;
+
     @Override
     public void setup (Entry<?> appointmentEntry) {
+        if (appointment != null && appointmentEntry != null)
+            reset();
+
         appointmentPropertyEntry = appointmentEntry;
-        appointment= (AppointmentProperty)appointmentEntry.getUserObject();
+        appointment = (AppointmentProperty) Objects.requireNonNull(appointmentEntry).getUserObject();
 
-        timeClock.setValue(appointment.getLocalTimeObjectProperty());
-        timeClock.valueProperty().addListener(localTimeChangeListener);
+        timeField.setValue(appointment.getLocalTimeObjectProperty());
+        timeField.valueProperty().addListener(localTimeChangeListener);
 
-        dateField.setOnDate(appointment.getLocalDateObjectProperty());
-        dateField.onDateProperty().addListener(localDateChangeListener);
+        dateField.setValue(appointment.getLocalDateObjectProperty());
+        dateField.valueProperty().addListener(localDateChangeListener);
 
         titleField.textProperty().bindBidirectional(appointment.titleProperty());
 
-        /*detailList.setCellFactory(param -> {
-            ListCell<String> listCell = new TextFieldListCell<String>(){
+        detailList.setCellFactory(param -> {
+            ListCell<String> listCell = new TextFieldListCell<>(new StringConverter<String>() {
                 @Override
-                public void commitEdit(String newValue) {
-                    super.commitEdit(newValue);
+                public String toString(String object) {
+                    return object.trim();
                 }
-            };
 
-
-            listCell.setOnMousePressed(event -> {
-                if (event.getButton() == MouseButton.SECONDARY) {
-                    detailList.getItems().remove(selectedIndex);
-
-                    detailList.layout();
-                    detailList.edit(detailList.getItems().size() - 1);
+                @Override
+                public String fromString(String string) {
+                    return string.trim();
                 }
             });
 
+            listCell.setOnMousePressed(event -> {
+                if (event.getButton() == MouseButton.SECONDARY) {
+                    detailList.getItems().remove(listCell.getItem());
+                    detailList.layout();
+                }
+
+                selectedItemIndex = listCell.getIndex();
+                deleteButton.setVisible(true);
+            });
+
             return listCell;
-        });*/
-        detailList.setCellFactory(TextFieldListCell.forListView());
+        });
 
         detailList.setItems(appointment.getDetailListProperty());
 
@@ -78,12 +90,20 @@ public class AppointmentDetailsController extends Controller {
             detailList.layout();
             detailList.edit(detailList.getItems().size() - 1);
         });
+
+        deleteButton.setVisible(false);
+        deleteButton.setOnAction(event -> {
+            if (selectedItemIndex > -1) {
+                detailList.getItems().remove(selectedItemIndex);
+                detailList.layout();
+            }
+        });
     }
 
     public void reset () {
         titleField.textProperty().unbindBidirectional(appointment.titleProperty());
-        timeClock.valueProperty().removeListener(localTimeChangeListener);
-        dateField.onDateProperty().removeListener(localDateChangeListener);
+        timeField.valueProperty().removeListener(localTimeChangeListener);
+        dateField.valueProperty().removeListener(localDateChangeListener);
     }
 
     private ChangeListener<LocalTime> localTimeChangeListener = new ChangeListener<LocalTime>() {

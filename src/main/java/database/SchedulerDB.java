@@ -9,6 +9,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 
 public class SchedulerDB {
 
@@ -31,9 +32,7 @@ public class SchedulerDB {
             InputStream inputStream = new FileInputStream("./scheduler-bfb8b.json");
 
             GoogleCredentials credentials = GoogleCredentials.fromStream(inputStream);
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(credentials)
-                    .build();
+            FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(credentials).build();
 
             FirebaseApp.initializeApp(options);
 
@@ -43,5 +42,9 @@ public class SchedulerDB {
         }
 
         return db;
+    }
+
+    public void fetchAppointments (LocalDate localDate) {
+
     }
 }

@@ -7,7 +7,9 @@ import data_structures.AppointmentTime;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -71,6 +73,11 @@ public class Utility {
     public static String getDocumentIDFromAppointmentDate(AppointmentDate date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
         return simpleDateFormat.format(dateFromAppointmentDate(date));
+    }
+
+    public static String getDocumentIDFromLocalDate (LocalDate localDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
+        return simpleDateFormat.format(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
     public static Date dateFromAppointmentDate(AppointmentDate appointmentDate) {

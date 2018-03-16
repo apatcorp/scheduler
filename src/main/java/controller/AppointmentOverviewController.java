@@ -18,11 +18,8 @@ import data_structures.DailyRoutine;
 import database.SchedulerDB;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
-import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.BorderPane;
-import javafx.util.Callback;
+import javafx.scene.layout.Pane;
 import main.Main;
 import org.controlsfx.control.PopOver;
 import utility.ScreenHandler;
@@ -30,6 +27,7 @@ import utility.ScreenHandler;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 public class AppointmentOverviewController extends Controller implements Initializable {
 
@@ -45,9 +43,9 @@ public class AppointmentOverviewController extends Controller implements Initial
         weekPage.getCalendarSources().remove(0);
 
         // create new calendar
-        Calendar calendar = new Calendar("data_structures.Appointment");
+        Calendar calendar = new Calendar("Appointment");
         calendar.setShortName("App");
-        calendar.setStyle(Calendar.Style.STYLE2);
+        calendar.setStyle(Calendar.Style.STYLE3);
 
         // pull daily routines from the database
         List<DailyRoutine> dailyRoutines = getDailyRoutinesFromDatabase();
@@ -72,23 +70,24 @@ public class AppointmentOverviewController extends Controller implements Initial
         weekPage.setEntryDetailsPopOverContentCallback(param -> new CustomEntryPopover(param.getEntry(), param.getPopOver()));
 
         // set custom context menus on right click
-        //weekPage.setContextMenuCallback(param -> new CustomContextMenu(param.getZonedDateTime(), param.getCalendar()));
+        weekPage.setEntryContextMenuCallback(param -> new CustomContextMenu(param.getEntry(), param.getCalendar()));
+        weekPage.setContextMenuCallback(param -> new CustomContextMenu(param.getZonedDateTime(), param.getCalendar()));
 
         newAppointment.setOnAction(event -> {
             PopOver popOver = new PopOver();
             ScreenHandler.ScreenInfo screenInfo = ScreenHandler.getInstance().getScreenInfo("NewDailyRoutine");
-            BorderPane borderPane = (BorderPane)screenInfo.getPane();
+            Pane pane = screenInfo.getPane();
             Controller controller = screenInfo.getController();
             controller.setup();
 
             popOver.setAnimated(true);
             popOver.setArrowSize(0);
-            popOver.setTitle("New data_structures.Appointment");
+            popOver.setTitle("Neuer Tagesablauf");
             popOver.setCloseButtonEnabled(true);
             popOver.setHeaderAlwaysVisible(true);
             popOver.setDetached(true);
 
-            popOver.setContentNode(borderPane);
+            popOver.setContentNode(pane);
             popOver.show(Main.scene.getWindow());
         });
     }
@@ -97,6 +96,7 @@ public class AppointmentOverviewController extends Controller implements Initial
         List<DailyRoutine> dailyRoutines = new ArrayList<>();
 
         ApiFuture<QuerySnapshot> future = SchedulerDB.getDB().collection(SchedulerDB.DB_NAME).get();
+
         List<QueryDocumentSnapshot> documentSnapshots;
         try {
             documentSnapshots = future.get().getDocuments();
