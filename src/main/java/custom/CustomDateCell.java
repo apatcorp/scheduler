@@ -24,13 +24,20 @@ public class CustomDateCell extends YearMonthView.DateCell {
         minMaxDates = new ArrayList<>();
 
         standardStyle = getStyle();
-        selectedStyle = "-fx-background-color: #60E8AD;";
+        selectedStyle = "-fx-background-color: #CAD7E1;";
         highlightedStyle = "-fx-background-color: #E9967A;";
 
         this.setOnMouseClicked(event -> {
-            /*if (datePicker.getSelectedDates().size() == 2) {
-                setRange();
-            }*/
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                if (!datePicker.getSelectedDates().contains(getDate()))
+                    datePicker.getSelectedDates().add(getDate());
+
+                minMaxDates.add(getDate());
+                if (minMaxDates.size() == 2) {
+                    setRange();
+                    minMaxDates.clear();
+                }
+            }
         });
     }
 
@@ -41,7 +48,7 @@ public class CustomDateCell extends YearMonthView.DateCell {
         minMaxDates = new ArrayList<>();
 
         standardStyle = getStyle();
-        selectedStyle = "-fx-background-color: #60E8AD;";
+        selectedStyle = "-fx-background-color: #CAD7E1;";
         highlightedStyle = "-fx-background-color: #E9967A;";
         datePicker.setSelectionMode(SelectionMode.MULTIPLE);
 
