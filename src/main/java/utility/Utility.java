@@ -3,6 +3,7 @@ package utility;
 import data_structures.Appointment;
 import data_structures.AppointmentDate;
 import data_structures.AppointmentTime;
+import javafx.scene.control.ProgressIndicator;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -78,6 +79,10 @@ public class Utility {
     public static String getDocumentIDFromLocalDate (LocalDate localDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
         return simpleDateFormat.format(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    }
+
+    public static LocalDate localDateFromAppointmentDate (AppointmentDate appointmentDate) {
+        return LocalDate.of(appointmentDate.getYear(), appointmentDate.getMonth(), appointmentDate.getDate());
     }
 
     public static Date dateFromAppointmentDate(AppointmentDate appointmentDate) {

@@ -7,6 +7,7 @@ import data_structures.AppointmentDate;
 import data_structures.AppointmentProperty;
 import data_structures.AppointmentTime;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -35,8 +36,41 @@ public class NewAppointmentEntry extends Entry<AppointmentProperty> {
         setEntryProperties(appointment, startDateTime, endDateTime);
     }
 
+    public NewAppointmentEntry (AppointmentProperty appointmentProperty, LocalDate localDate) {
+        int hour = appointmentProperty.getLocalTimeObjectProperty().getHour();
+        int minute = appointmentProperty.getLocalTimeObjectProperty().getMinute();
+
+        ZonedDateTime startDateTime = ZonedDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), hour, minute, 0, 0, ZoneId.systemDefault());
+        ZonedDateTime endDateTime = ZonedDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), hour + 1, minute, 0, 0, ZoneId.systemDefault());
+
+        setEntryProperty(appointmentProperty, startDateTime, endDateTime);
+    }
+
     private void setEntryProperties (Appointment appointment, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         AppointmentProperty appointmentProperty = new AppointmentProperty(appointment);
+        setUserObject(appointmentProperty);
+
+        titleProperty().bindBidirectional(getUserObject().titleProperty());
+
+        Interval interval = new Interval();
+        interval.withDates(startDateTime.toLocalDateTime(), endDateTime.toLocalDateTime());
+
+        intervalProperty().setValue(interval);
+
+        startDateProperty().addListener((observable, oldValue, newValue) -> {
+            getUserObject().localDateObjectProperty().setValue(newValue);
+            changeStartDate(newValue, true);
+        });
+        startTimeProperty().addListener((observable, oldValue, newValue) -> {
+            getUserObject().localTimeObjectProperty().setValue(newValue);
+            changeStartTime(newValue, true);
+        });
+
+        setInterval(startDateTime, endDateTime);
+    }
+
+    private void setEntryProperty (AppointmentProperty _appointmentProperty, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
+        AppointmentProperty appointmentProperty = new AppointmentProperty(_appointmentProperty.getTitleProperty(), _appointmentProperty.getLocalDateObjectProperty(), _appointmentProperty.getLocalTimeObjectProperty(), _appointmentProperty.getDetailListProperty());
         setUserObject(appointmentProperty);
 
         titleProperty().bindBidirectional(getUserObject().titleProperty());

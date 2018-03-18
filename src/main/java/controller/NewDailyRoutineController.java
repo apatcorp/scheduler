@@ -1,25 +1,23 @@
 package controller;
 
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.Entry;
 import com.calendarfx.view.YearMonthView;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.*;
+import custom.CustomDateCell;
+import custom.NewAppointmentEntry;
 import data_structures.Appointment;
 import data_structures.AppointmentProperty;
 import data_structures.DailyRoutine;
 import data_structures.DailyRoutineWrapper;
 import database.SchedulerDB;
-import interfaces.IDataReceiver;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
 import javafx.collections.SetChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import org.controlsfx.control.MasterDetailPane;
@@ -29,15 +27,12 @@ import utility.Utility;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class NewDailyRoutineController extends Controller implements IDataReceiver {
+
+public class NewDailyRoutineController extends Controller {
 
     @FXML
     public MasterDetailPane masterDetailPane;
@@ -55,24 +50,189 @@ public class NewDailyRoutineController extends Controller implements IDataReceiv
     public YearMonthView templateDatePicker;
 
     @FXML
-    public Button newAppointment;
+    public Button newAppointmentButton;
+
+    @FXML
+    public Button createEntriesButton;
+
+    @FXML
+    public ProgressIndicator progressbar;
 
     private ListView<DailyRoutineWrapper> appointmentListView;
-    private List<DailyRoutineWrapper> dailyRoutines = new ArrayList<>();
     private List<LocalDate> selectedDates = new ArrayList<>();
+    private List<LocalDate> dailyRoutineDates = new ArrayList<>();
 
     private NewAppointmentDetailController newAppointmentDetailController;
 
+    private boolean loading;
+
     @Override
-    public void setup() {
+    public void setup(Calendar calendar) {
         super.setup();
 
+        // setup progressbar
+        setupProgressbar();
+
+        // setup list of appointments
+        setupAppointmentListView();
+
+        // setup template date picker
+        setupTemplateDatePicker();
+
+        // setup master detail pane
+        setupMasterDetailPane();
+
+        // setup appointment date picker
+        fetchAllDailyRoutines();
+
+        newAppointmentButton.setOnAction(event -> {
+            // define local date and local time for new appointment
+            LocalDate localDate = LocalDate.now();
+            LocalTime localTime = LocalTime.now();
+
+            // create appointment and wrap it inside custom daily routine class
+            AppointmentProperty appointment = new AppointmentProperty("Neuer Termin", localDate, localTime, new ArrayList<>());
+            DailyRoutineWrapper dailyRoutineWrapper = new DailyRoutineWrapper(appointment, datePicker.getSelectedDates());
+            // add new appointment to the appointment list view
+            appointmentListView.getItems().add(dailyRoutineWrapper);
+            // scroll to latest entry in the appointment list view
+            appointmentListView.scrollTo(appointmentListView.getItems().size() - 1);
+            appointmentListView.layout();
+        });
+
+        createEntriesButton.setOnAction(event -> {
+            for (DailyRoutineWrapper dailyRoutineWrapper: appointmentListView.getItems()) {
+                for (LocalDate localDate: dailyRoutineWrapper.getLocalDateList()) {
+                    Entry<AppointmentProperty> appointmentEntry = new NewAppointmentEntry(dailyRoutineWrapper.getAppointmentProperty(), localDate);
+
+                    Map<LocalDate, List<Entry<?>>> entryMap = calendar.findEntries(localDate, localDate, ZoneId.systemDefault());
+                    List<Entry<?>> entries = entryMap.get(localDate);
+
+                    calendar.removeEntries(entries);
+                    calendar.addEntry(appointmentEntry);
+                }
+            }
+
+            pushToServer(calendar);
+
+            fetchAllDailyRoutines();
+            appointmentListView.getItems().clear();
+            selectedDates.clear();
+        });
+    }
+
+    private void pushToServer (Calendar calendar) {
+        for (Entry entry: calendar.findEntries("")) {
+            System.out.println(entry.getStartDate());
+        }
+    }
+
+    private void fetchAppointments (LocalDate localDate) {
+        String documentID = Utility.getDocumentIDFromLocalDate(localDate);
+        final ApiFuture<DocumentSnapshot> query = SchedulerDB.getDB().collection(SchedulerDB.DB_NAME).document(documentID).get();
+
+        // loading section
+        isLoading(true);
+
+        new Thread(() -> {
+            try {
+                DocumentSnapshot documentSnapshot = query.get();
+                if (documentSnapshot != null) {
+                    DailyRoutine dailyRoutine = documentSnapshot.toObject(DailyRoutine.class);
+
+                    Platform.runLater(() -> {
+                        if (dailyRoutine != null) {
+                            Platform.runLater(() -> onDataReceived(dailyRoutine));
+                        } else {
+                            isLoading(false);
+                        }
+                    });
+                } else {
+                    isLoading(false);
+                }
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                isLoading(false);
+            }
+        }).start();
+    }
+
+    private void fetchAllDailyRoutines () {
+        ApiFuture<QuerySnapshot> query = SchedulerDB.getDB().collection(SchedulerDB.DB_NAME).get();
+
+        // loading section
+        isLoading(true);
+
+        new Thread(() -> {
+            try {
+                QuerySnapshot snapshots = query.get();
+                List<QueryDocumentSnapshot> documents = snapshots.getDocuments();
+
+                for (QueryDocumentSnapshot documentSnapshot: documents) {
+                    DailyRoutine dailyRoutine = documentSnapshot.toObject(DailyRoutine.class);
+                    LocalDate date = Utility.localDateFromAppointmentDate(dailyRoutine.getAppointmentDate());
+                    if (!dailyRoutineDates.contains(date))
+                        dailyRoutineDates.add(date);
+                }
+
+                Platform.runLater(this::onDataReceived);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                isLoading(false);
+            }
+
+        }).start();
+    }
+
+    private void onDataReceived(DailyRoutine dailyRoutine) {
+        List<Appointment> appointments = new ArrayList<>(dailyRoutine.getAppointments().values());
+
+        for (Appointment appointment: appointments) {
+            AppointmentProperty appointmentProperty = new AppointmentProperty(appointment);
+            DailyRoutineWrapper dailyRoutineWrapper = new DailyRoutineWrapper(appointmentProperty, selectedDates);
+            if (!appointmentListView.getItems().contains(dailyRoutineWrapper)) {
+                appointmentListView.getItems().add(dailyRoutineWrapper);
+            }
+        }
+
+        isLoading(false);
+    }
+
+    private void onDataReceived() {
+        // setup template date picker
+        templateDatePicker.setCellFactory(param -> new YearMonthView.DateCell() {
+            @Override
+            protected void update(LocalDate date) {
+                super.update(date);
+
+                boolean outside = !dailyRoutineDates.contains(date);
+                setDisable(outside);
+            }
+        });
+
+        datePicker.setCellFactory(param -> new CustomDateCell(datePicker, dailyRoutineDates));
+        if (datePicker.getSelectedDates().size() > 0) {
+            LocalDate first = datePicker.getSelectedDates().stream().reduce((localDate, localDate2) -> localDate).get();
+            datePicker.setDate(first);
+        } else if (dailyRoutineDates.size() > 0) {
+            datePicker.setDate(dailyRoutineDates.get(0));
+        }
+
+        isLoading(false);
+    }
+
+    private void setupProgressbar () {
+        loading = false;
+        progressbar.setProgress(-1);
+        progressbar.setVisible(loading);
+    }
+
+    private void setupAppointmentListView () {
         appointmentListView = new ListView<>();
         appointmentListView.setCellFactory(param -> new ListCell<DailyRoutineWrapper>() {
-
             @Override
             protected void updateItem(DailyRoutineWrapper item, boolean empty) {
-
                 DailyRoutineWrapper oldItem = getItem();
                 if (oldItem != null)
                     textProperty().unbind();
@@ -81,18 +241,46 @@ public class NewDailyRoutineController extends Controller implements IDataReceiv
 
                 if (!empty && item != null)
                     textProperty().bind(item.getAppointmentProperty().titleProperty());
-
+                else {
+                    textProperty().unbind();
+                    setText("");
+                }
             }
         });
 
+        appointmentListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        appointmentListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                newAppointmentDetailController.setup(newValue);
+            }
+            masterDetailPane.setShowDetailNode(newValue != null);
+        });
+
+        appointmentListView.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.DELETE)) {
+                List<DailyRoutineWrapper> selectedItems = appointmentListView.getSelectionModel().getSelectedItems();
+
+                if (selectedItems.size() > 0) {
+                    appointmentListView.getItems().removeAll(selectedItems);
+                }
+            }
+        });
+    }
+
+    private void setupTemplateDatePicker () {
         templateToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            templateBox.setVisible(newValue);
+            if (observable.getValue() != null && observable.getValue()) {
+                fetchAllDailyRoutines();
+            }
+            templateBox.setVisible(observable.getValue());
         });
 
         templateDatePicker.getSelectedDates().addListener((SetChangeListener<? super LocalDate>) change -> {
-            fetchAppointments(change.getElementAdded());
+            if (change.getElementAdded() != null) fetchAppointments(change.getElementAdded());
         });
+    }
 
+    private void setupMasterDetailPane () {
         ScreenHandler.ScreenInfo screenInfo = ScreenHandler.getInstance().getScreenInfo("NewAppointmentDetail");
         Pane pane = screenInfo.getPane();
         newAppointmentDetailController = (NewAppointmentDetailController)screenInfo.getController();
@@ -100,108 +288,18 @@ public class NewDailyRoutineController extends Controller implements IDataReceiv
         masterDetailPane.setMasterNode(appointmentListView);
         masterDetailPane.setDetailNode(pane);
         masterDetailPane.setShowDetailNode(false);
-
-        datePicker.setCellFactory(param -> new DateCellCustom(datePicker, selectedDates));
-
-        newAppointment.setOnAction(event -> {
-            LocalDate localDate = LocalDate.now();
-            LocalTime localTime = LocalTime.now();
-
-            AppointmentProperty appointment = new AppointmentProperty("New Appointment", localDate, localTime, new ArrayList<>());
-            DailyRoutineWrapper dailyRoutineWrapper = new DailyRoutineWrapper(appointment, selectedDates);
-            System.out.println(selectedDates);
-            dailyRoutines.add(dailyRoutineWrapper);
-
-            appointmentListView.getItems().add(dailyRoutineWrapper);
-
-            appointmentListView.scrollTo(appointmentListView.getItems().size() - 1);
-            appointmentListView.layout();
-        });
-
-        appointmentListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            masterDetailPane.setShowDetailNode(true);
-            newAppointmentDetailController.setup(newValue);
-        });
-
     }
 
-    private void fetchAppointments (LocalDate localDate) {
+    private void isLoading (boolean value) {
+        loading = value;
+        progressbar.setVisible(loading);
 
-        String documentID = Utility.getDocumentIDFromLocalDate(localDate);
-
-        DocumentReference documentReference = SchedulerDB.getDB().collection(SchedulerDB.DB_NAME).document(documentID);
-
-        documentReference.addSnapshotListener((documentSnapshot, e) -> {
-            DailyRoutine dailyRoutine = Objects.requireNonNull(documentSnapshot).toObject(DailyRoutine.class);
-
-            OnDataReceived(dailyRoutine);
-        });
-    }
-
-    @Override
-    public void OnDataReceived(DailyRoutine dailyRoutine) {
-        List<Appointment> appointments = new ArrayList<>(dailyRoutine.getAppointments().values());
-
-        for (Appointment appointment: appointments) {
-            AppointmentProperty appointmentProperty = new AppointmentProperty(appointment);
-            DailyRoutineWrapper dailyRoutineWrapper = new DailyRoutineWrapper(appointmentProperty, selectedDates);
-
-            appointmentListView.getItems().add(dailyRoutineWrapper);
-        }
-    }
-
-    public static class DateCellCustom extends YearMonthView.DateCell {
-
-        private List<LocalDate> selectedDates;
-
-        DateCellCustom(YearMonthView yearMonthView, List<LocalDate> selectedDates) {
-            super();
-
-            this.selectedDates = selectedDates;
-
-            this.setOnMouseClicked(event -> {
-                if (selectedDates.size() > 2) {
-                    selectedDates.clear();
-                }
-
-                if (selectedDates.contains(this.getDate())) {
-                    yearMonthView.getSelectedDates().remove(getDate());
-                } else {
-                    selectedDates.add(this.getDate());
-
-                }
-                if (selectedDates.size() == 2) {
-                    setRange();
-                }
-                yearMonthView.refreshData();
-            });
-        }
-
-        @Override
-        protected void update(LocalDate date) {
-            super.update(date);
-
-            if (selectedDates.contains(date)) {
-                setStyle(selectedDates.get(0).equals(date) || selectedDates.get(selectedDates.size() - 1).equals(date) ? "-fx-background-color: #60E8AD;": "-fx-background-color: #B0E0E6;");
-            } else {
-                setStyle("");
-            }
-        }
-
-        private void setRange () {
-            LocalDate startDate = selectedDates.get(0);
-            LocalDate endDate = selectedDates.get(1);
-
-            if (startDate.isAfter(endDate)) {
-                LocalDate tmp = endDate;
-                endDate = startDate;
-                startDate = tmp;
-            }
-
-            selectedDates.clear();
-            selectedDates.addAll(Stream.iterate(startDate, date -> date.plusDays(1)).limit(ChronoUnit.DAYS.between(startDate, endDate) + 1).collect(Collectors.toList()));
-
-            //System.out.println(selectedDates.toString());
-        }
+        // enable/disable controls depending on current loading state
+        appointmentListView.setDisable(loading);
+        datePicker.setDisable(loading);
+        templateDatePicker.setDisable(loading);
+        templateToggle.setDisable(loading);
+        newAppointmentButton.setDisable(loading);
+        createEntriesButton.setDisable(loading);
     }
 }

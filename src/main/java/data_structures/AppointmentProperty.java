@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 public class AppointmentProperty {
 
@@ -80,5 +81,20 @@ public class AppointmentProperty {
                 ", localTimeObjectProperty=" + localTime.getValue() +
                 ", detailListProperty=" + detailList.toString() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AppointmentProperty that = (AppointmentProperty) o;
+        return title.getValue().equals(that.title.getValue()) &&
+                localTime.get().equals(that.localTime.get()) &&
+                detailList.equals(that.detailList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, localTime, detailList);
     }
 }

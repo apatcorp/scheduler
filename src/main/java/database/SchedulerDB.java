@@ -9,7 +9,6 @@ import com.google.firebase.cloud.FirestoreClient;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 
 public class SchedulerDB {
 
@@ -37,14 +36,11 @@ public class SchedulerDB {
             FirebaseApp.initializeApp(options);
 
             db = FirestoreClient.getFirestore();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return db;
-    }
-
-    public void fetchAppointments (LocalDate localDate) {
-
     }
 }

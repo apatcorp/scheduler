@@ -27,7 +27,6 @@ import utility.ScreenHandler;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 
 public class AppointmentOverviewController extends Controller implements Initializable {
 
@@ -78,14 +77,13 @@ public class AppointmentOverviewController extends Controller implements Initial
             ScreenHandler.ScreenInfo screenInfo = ScreenHandler.getInstance().getScreenInfo("NewDailyRoutine");
             Pane pane = screenInfo.getPane();
             Controller controller = screenInfo.getController();
-            controller.setup();
+            controller.setup(calendar);
 
             popOver.setAnimated(true);
             popOver.setArrowSize(0);
             popOver.setTitle("Neuer Tagesablauf");
             popOver.setCloseButtonEnabled(true);
             popOver.setHeaderAlwaysVisible(true);
-            popOver.setDetached(true);
 
             popOver.setContentNode(pane);
             popOver.show(Main.scene.getWindow());
