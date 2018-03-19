@@ -1,6 +1,5 @@
 package data_structures;
 
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 
 import java.time.LocalDate;
@@ -37,7 +36,7 @@ public class DailyRoutineWrapper {
     public String toString() {
         return "DailyRoutineWrapper{" +
                 "appointmentProperty=" + appointmentProperty.toString() +
-                ", localDateObservableList=" + localDateList.toString() +
+                ", localDateList=" + localDateList.toString() +
                 '}';
     }
 

@@ -3,9 +3,8 @@ package controller;
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
-import com.calendarfx.view.DateControl;
+import com.calendarfx.view.CalendarView;
 import com.calendarfx.view.page.WeekPage;
-import com.calendarfx.view.popover.EntryPopOverContentPane;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
@@ -16,61 +15,80 @@ import data_structures.Appointment;
 import data_structures.AppointmentProperty;
 import data_structures.DailyRoutine;
 import database.SchedulerDB;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import main.Main;
 import org.controlsfx.control.PopOver;
 import utility.ScreenHandler;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class AppointmentOverviewController extends Controller implements Initializable {
-
-    @FXML
-    public WeekPage weekPage;
+public class MainSceneController extends Controller  {
 
     @FXML
     public MenuItem newAppointment;
 
+    @FXML
+    public VBox root;
+
+    @FXML
+    public VBox parent;
+
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // remove all calendar resources
-        weekPage.getCalendarSources().remove(0);
+    public void setup(List<DailyRoutine> dailyRoutines) {
+
+        CalendarView calendarView = new CalendarView();
+        parent.getChildren().add(calendarView);
+
+        calendarView.setShowAddCalendarButton(false);
+        calendarView.setShowPrintButton(false);
+        calendarView.setShowDeveloperConsole(false);
+        calendarView.setShowPageToolBarControls(false);
+        calendarView.setShowSearchField(false);
+
+        calendarView.getCalendarSources().remove(0);
 
         // create new calendar
-        Calendar calendar = new Calendar("Appointment");
-        calendar.setShortName("App");
-        calendar.setStyle(Calendar.Style.STYLE3);
+        Calendar calendar = new Calendar("Termin");
+        calendar.setShortName("Termin");
+        calendar.setStyle(Calendar.Style.STYLE1);
 
         // pull daily routines from the database
-        List<DailyRoutine> dailyRoutines = getDailyRoutinesFromDatabase();
-        for (DailyRoutine dailyRoutine: dailyRoutines) {
+        for (DailyRoutine dailyRoutine : dailyRoutines) {
             List<Appointment> appointments = new ArrayList<>(dailyRoutine.getAppointments().values());
             // create new appointment entry for each appointment
-            for (Appointment appointment: appointments) {
+            for (Appointment appointment : appointments) {
                 Entry<AppointmentProperty> appointmentEntry = new NewAppointmentEntry(appointment);
                 calendar.addEntry(appointmentEntry);
             }
         }
 
         // create new calendar resource and add calendar resource with custom calendar to the week page
-        CalendarSource calendarSource = new CalendarSource("Appointments");
+        CalendarSource calendarSource = new CalendarSource("Tagesabläufe");
         calendarSource.getCalendars().add(calendar);
-        weekPage.getCalendarSources().add(calendarSource);
+        calendarView.getCalendarSources().add(calendarSource);
 
         // set create entry factory callback
-        weekPage.setEntryFactory(param -> new NewAppointmentEntry(param.getZonedDateTime()));
-        weekPage.setDefaultCalendarProvider(param -> calendar);
+        calendarView.setEntryFactory(param -> new NewAppointmentEntry(param.getZonedDateTime()));
+        calendarView.setDefaultCalendarProvider(param -> calendar);
         // set custom popover on double click factory callback
-        weekPage.setEntryDetailsPopOverContentCallback(param -> new CustomEntryPopover(param.getEntry(), param.getPopOver()));
+        calendarView.setEntryDetailsPopOverContentCallback(param -> new CustomEntryPopover(param.getEntry(), param.getPopOver()));
 
         // set custom context menus on right click
-        weekPage.setEntryContextMenuCallback(param -> new CustomContextMenu(param.getEntry(), param.getCalendar()));
-        weekPage.setContextMenuCallback(param -> new CustomContextMenu(param.getZonedDateTime(), param.getCalendar()));
+        calendarView.setEntryContextMenuCallback(param -> new CustomContextMenu(param.getEntry(), param.getCalendar()));
+        calendarView.setContextMenuCallback(param -> new CustomContextMenu(param.getZonedDateTime(), param.getCalendar()));
 
         newAppointment.setOnAction(event -> {
             PopOver popOver = new PopOver();
@@ -88,25 +106,6 @@ public class AppointmentOverviewController extends Controller implements Initial
             popOver.setContentNode(pane);
             popOver.show(Main.scene.getWindow());
         });
-    }
 
-    private List<DailyRoutine> getDailyRoutinesFromDatabase () {
-        List<DailyRoutine> dailyRoutines = new ArrayList<>();
-
-        ApiFuture<QuerySnapshot> future = SchedulerDB.getDB().collection(SchedulerDB.DB_NAME).get();
-
-        List<QueryDocumentSnapshot> documentSnapshots;
-        try {
-            documentSnapshots = future.get().getDocuments();
-
-            for (QueryDocumentSnapshot documentSnapshot: documentSnapshots) {
-                DailyRoutine dailyRoutine = documentSnapshot.toObject(DailyRoutine.class);
-                dailyRoutines.add(dailyRoutine);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return dailyRoutines;
     }
 }

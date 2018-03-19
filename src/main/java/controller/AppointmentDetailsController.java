@@ -75,7 +75,6 @@ public class AppointmentDetailsController extends Controller {
                     detailList.layout();
                 }
 
-                selectedItemIndex = listCell.getIndex();
                 deleteButton.setVisible(true);
             });
 
@@ -93,6 +92,7 @@ public class AppointmentDetailsController extends Controller {
 
         deleteButton.setVisible(false);
         deleteButton.setOnAction(event -> {
+            selectedItemIndex = detailList.getSelectionModel().getSelectedIndex();
             if (selectedItemIndex > -1) {
                 detailList.getItems().remove(selectedItemIndex);
                 detailList.layout();

@@ -39,6 +39,7 @@ public class ScreenHandler {
         return screenInfoMap.getOrDefault(name, null);
     }
 
+
     public static class ScreenInfo<T extends Controller> {
         private Pane pane;
         private T controller;

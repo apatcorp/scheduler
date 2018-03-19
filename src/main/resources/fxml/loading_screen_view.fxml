@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="root" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-size: cover;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoadingScreenController">
+   <children>
+      <ImageView fitHeight="800.0" fitWidth="1280.0" pickOnBounds="true" StackPane.alignment="CENTER">
+         <image>
+            <Image url="@../images/loading_screen_bg.jpg" />
+         </image>
+         <viewport>
+            <Rectangle2D />
+         </viewport>
+      </ImageView>
+      <ProgressIndicator fx:id="progress" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" scaleX="6.0" scaleY="6.0" StackPane.alignment="CENTER" />
+      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Hallo" textAlignment="CENTER">
+         <font>
+            <Font size="60.0" />
+         </font>
+      </Text>
+   </children>
+</StackPane>
