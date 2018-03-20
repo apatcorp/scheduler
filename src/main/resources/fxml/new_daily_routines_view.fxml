@@ -3,35 +3,35 @@
 <?import com.calendarfx.view.YearMonthView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.MasterDetailPane?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
-<VBox prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NewDailyRoutineController">
+<VBox prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NewDailyRoutineController">
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
-            <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+            <VBox HBox.hgrow="ALWAYS">
                <children>
                   <HBox>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Datumauswahl:">
-                           <HBox.margin>
-                              <Insets bottom="10.0" left="20.0" top="10.0" />
-                           </HBox.margin>
+                        <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Datumsauswahl" textFill="#727272" wrapText="true">
                            <font>
-                              <Font size="14.0" />
+                              <Font name="Lucida Sans Unicode" size="16.0" />
                            </font>
-                        </Text>
+                        </Label>
                      </children>
+                     <VBox.margin>
+                        <Insets left="10.0" top="5.0" />
+                     </VBox.margin>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <YearMonthView fx:id="datePicker" enableHyperlinks="false" showWeekNumbers="false" HBox.hgrow="ALWAYS">
+                        <YearMonthView fx:id="datePicker" enableHyperlinks="false" showToday="false" showWeekNumbers="false" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -46,26 +46,26 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+            <VBox HBox.hgrow="ALWAYS">
                <children>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="26.0">
                      <children>
-                        <ToggleSwitch fx:id="templateToggle" text="Templateauswahl">
+                        <ToggleSwitch fx:id="templateToggle" text="Templateauswahl" textFill="#727272">
                            <HBox.margin>
-                              <Insets bottom="5.0" left="20.0" top="10.0" />
+                              <Insets bottom="5.0" />
                            </HBox.margin>
                            <font>
-                              <Font size="14.0" />
+                              <Font name="Lucida Sans Unicode" size="16.0" />
                            </font>
                         </ToggleSwitch>
                      </children>
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
+                     <VBox.margin>
+                        <Insets left="10.0" top="5.0" />
+                     </VBox.margin>
                   </HBox>
                   <HBox fx:id="templateBox" prefHeight="100.0" prefWidth="200.0" visible="false" VBox.vgrow="ALWAYS">
                      <children>
-                        <YearMonthView fx:id="templateDatePicker" HBox.hgrow="ALWAYS">
+                        <YearMonthView fx:id="templateDatePicker" showToday="false" showWeekNumbers="false" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -81,12 +81,19 @@
                </HBox.margin>
             </VBox>
          </children>
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
       </HBox>
-      <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+      <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
          <children>
             <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="newAppointmentButton" contentDisplay="CENTER" mnemonicParsing="false" text="Neuer Termin" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="newAppointmentButton" maxHeight="-Infinity" mnemonicParsing="false" style="-fx-background-color: #17A2B8;" text="Neuer Termin" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Sans Unicode" size="14.0" />
+                     </font>
+                  </Button>
                </children>
             </VBox>
             <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
@@ -94,16 +101,27 @@
                   <ProgressIndicator fx:id="progressbar" />
                </children>
                <HBox.margin>
-                  <Insets bottom="5.0" top="5.0" />
+                  <Insets />
                </HBox.margin>
             </VBox>
             <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="createEntriesButton" mnemonicParsing="false" style="-fx-background-color: green;" text="Erstellen" textFill="WHITE" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="createEntriesButton" maxHeight="-Infinity" mnemonicParsing="false" style="-fx-background-color: #72BA3A;" text="Termine erstellen" textFill="WHITE">
+                     <font>
+                        <Font name="Lucida Sans Unicode" size="14.0" />
+                     </font>
+                  </Button>
                </children>
             </VBox>
          </children>
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
       </HBox>
-      <MasterDetailPane fx:id="masterDetailPane" dividerPosition="0.3" showDetailNode="false" VBox.vgrow="ALWAYS" />
+      <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+         <children>
+            <MasterDetailPane fx:id="masterDetailPane" dividerPosition="0.3" showDetailNode="false" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
    </children>
 </VBox>

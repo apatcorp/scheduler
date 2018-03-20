@@ -106,6 +106,25 @@ public class LoadingScreenController extends Controller implements Initializable
     }
 
     private void errorLoadingData () {
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(.5), root);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setCycleCount(1);
 
+        fadeOut.setOnFinished(event -> {
+            ScreenHandler.ScreenInfo screenInfo = ScreenHandler.getInstance().getScreenInfo("Main");
+            Pane main = screenInfo.getPane();
+
+            root.getChildren().setAll(main);
+
+            FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), root);
+            fadeIn.setFromValue(0);
+            fadeIn.setToValue(1);
+            fadeIn.setCycleCount(1);
+
+            fadeIn.play();
+        });
+
+        fadeOut.play();
     }
 }

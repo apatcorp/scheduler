@@ -19,9 +19,9 @@
          </viewport>
       </ImageView>
       <ProgressIndicator fx:id="progress" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" scaleX="6.0" scaleY="6.0" StackPane.alignment="CENTER" />
-      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Hallo" textAlignment="CENTER">
+      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Hallo">
          <font>
-            <Font size="60.0" />
+            <Font name="Lucida Sans Unicode" size="60.0" />
          </font>
       </Text>
    </children>

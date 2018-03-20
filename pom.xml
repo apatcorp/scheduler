@@ -22,12 +22,23 @@
 
     <repositories>
         <repository>
+            <id>nexus-com-gluonhq</id>
+            <name>Nexus repo</name>
+            <url>http://nexus.gluonhq.com/nexus/content/repositories/releases</url>
+        </repository>
+        <repository>
             <id>jcenter</id>
             <url>http://jcenter.bintray.com</url>
         </repository>
+
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.gluonhq</groupId>
+            <artifactId>charm-glisten</artifactId>
+            <version>4.4.1</version>
+        </dependency>
         <dependency>
             <groupId>com.calendarfx</groupId>
             <artifactId>view</artifactId>

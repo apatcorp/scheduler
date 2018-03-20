@@ -10,27 +10,18 @@ import utility.ScreenHandler;
 
 public class CustomEntryPopover extends PopOverContentPane {
 
-    public CustomEntryPopover(Entry<?> entry, PopOver popOver) {
+    public CustomEntryPopover(Entry<?> entry) {
 
         System.out.println(entry.getUserObject().toString());
 
         ScreenHandler.ScreenInfo screenInfo = ScreenHandler.getInstance().getScreenInfo("AppointmentDetails");
-        Pane borderPane = screenInfo.getPane();
-        popOver.setContentNode(borderPane);
+        Pane pane = screenInfo.getPane();
 
-        PopOverTitledPane popOverTitledPane = new PopOverTitledPane("Appointment", popOver.getContentNode());
+        PopOverTitledPane popOverTitledPane = new PopOverTitledPane("Termin", pane);
         AppointmentDetailsController appointmentDetailsController = (AppointmentDetailsController)screenInfo.getController();
         appointmentDetailsController.setup(entry);
-
-        popOver.showingProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                appointmentDetailsController.reset();
-            }
-        });
 
         getPanes().addAll(popOverTitledPane);
         setExpandedPane(popOverTitledPane);
     }
-
-
 }

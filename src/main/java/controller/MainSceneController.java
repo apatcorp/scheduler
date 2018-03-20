@@ -4,44 +4,28 @@ import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
-import com.calendarfx.view.page.WeekPage;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
 import custom.CustomContextMenu;
 import custom.CustomEntryPopover;
 import custom.NewAppointmentEntry;
 import data_structures.Appointment;
 import data_structures.AppointmentProperty;
 import data_structures.DailyRoutine;
-import database.SchedulerDB;
-import javafx.animation.FadeTransition;
+import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import main.Main;
 import org.controlsfx.control.PopOver;
 import utility.ScreenHandler;
 
-import java.io.IOException;
-import java.net.URL;
+import java.awt.event.KeyEvent;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class MainSceneController extends Controller  {
 
     @FXML
     public MenuItem newAppointment;
-
-    @FXML
-    public VBox root;
 
     @FXML
     public VBox parent;
@@ -84,7 +68,7 @@ public class MainSceneController extends Controller  {
         calendarView.setEntryFactory(param -> new NewAppointmentEntry(param.getZonedDateTime()));
         calendarView.setDefaultCalendarProvider(param -> calendar);
         // set custom popover on double click factory callback
-        calendarView.setEntryDetailsPopOverContentCallback(param -> new CustomEntryPopover(param.getEntry(), param.getPopOver()));
+        calendarView.setEntryDetailsPopOverContentCallback(param -> new CustomEntryPopover(param.getEntry()));
 
         // set custom context menus on right click
         calendarView.setEntryContextMenuCallback(param -> new CustomContextMenu(param.getEntry(), param.getCalendar()));
@@ -106,6 +90,5 @@ public class MainSceneController extends Controller  {
             popOver.setContentNode(pane);
             popOver.show(Main.scene.getWindow());
         });
-
     }
 }

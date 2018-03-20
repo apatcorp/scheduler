@@ -1,22 +1,21 @@
 package main;
 
-import controller.Controller;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import utility.ScreenHandler;
-
-import java.io.IOException;
 
 
 public class Main extends Application{
     public static Scene scene;
 
-    public static boolean loadingScreenShown = false;
-
     public void start(Stage primaryStage) {
+
+        setUserAgentStylesheet(STYLESHEET_MODENA);
+
         ScreenHandler screenHandler = ScreenHandler.getInstance();
 
         screenHandler.add("LoadingScreen", "fxml/loading_screen_view.fxml");
@@ -26,6 +25,7 @@ public class Main extends Application{
         screenHandler.add("NewAppointmentDetail", "fxml/new_appointment_detail_view.fxml");
 
         scene = new Scene(screenHandler.getScreenInfo("LoadingScreen").getPane(), 1280, 800);
+        scene.getStylesheets().add("css/CustomStyle.css");
 
         primaryStage.setTitle("Scheduler");
         primaryStage.setScene(scene);

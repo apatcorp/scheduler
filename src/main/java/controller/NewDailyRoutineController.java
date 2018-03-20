@@ -18,8 +18,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import main.Main;
 import org.controlsfx.control.MasterDetailPane;
 import org.controlsfx.control.ToggleSwitch;
 import utility.ScreenHandler;
@@ -92,7 +94,7 @@ public class NewDailyRoutineController extends Controller {
 
             // create appointment and wrap it inside custom daily routine class
             AppointmentProperty appointment = new AppointmentProperty("Neuer Termin", localDate, localTime, new ArrayList<>());
-            DailyRoutineWrapper dailyRoutineWrapper = new DailyRoutineWrapper(appointment, datePicker.getSelectedDates());
+            DailyRoutineWrapper dailyRoutineWrapper = new DailyRoutineWrapper(appointment, selectedDates);
             // add new appointment to the appointment list view
             appointmentListView.getItems().add(dailyRoutineWrapper);
             // scroll to latest entry in the appointment list view
@@ -211,7 +213,7 @@ public class NewDailyRoutineController extends Controller {
             }
         });
 
-        datePicker.setCellFactory(param -> new CustomDateCell(datePicker, dailyRoutineDates));
+        datePicker.setCellFactory(param -> new CustomDateCell(datePicker, selectedDates, dailyRoutineDates));
         if (datePicker.getSelectedDates().size() > 0) {
             LocalDate first = datePicker.getSelectedDates().stream().reduce((localDate, localDate2) -> localDate).get();
             datePicker.setDate(first);
@@ -251,6 +253,7 @@ public class NewDailyRoutineController extends Controller {
         appointmentListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         appointmentListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
+                System.out.println(newValue.toString());
                 newAppointmentDetailController.setup(newValue);
             }
             masterDetailPane.setShowDetailNode(newValue != null);

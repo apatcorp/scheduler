@@ -1,0 +1,7 @@
+.root {
+    -fx-font-family: "Lucida Sans Unicode";
+}
+
+.button {
+    -fx-background-radius: 0;
+}

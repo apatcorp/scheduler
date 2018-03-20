@@ -3,14 +3,15 @@ package controller;
 import com.calendarfx.view.TimeField;
 import com.calendarfx.view.YearMonthView;
 import custom.CustomDateCell;
+import custom.CustomListCell;
 import data_structures.DailyRoutineWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.KeyCode;
+import javafx.util.StringConverter;
 
 import java.util.List;
 
@@ -39,17 +40,27 @@ public class NewAppointmentDetailController extends Controller {
 
         dailyRoutineWrapper = _dailyRoutineWrapper;
 
-        System.out.println(dailyRoutineWrapper.toString());
-
         titleEditText.textProperty().bindBidirectional(dailyRoutineWrapper.getAppointmentProperty().titleProperty());
         timeEditText.valueProperty().bindBidirectional(dailyRoutineWrapper.getAppointmentProperty().localTimeObjectProperty());
+
+        dateField.getSelectedDates().clear();
         dateField.getSelectedDates().addAll(dailyRoutineWrapper.getLocalDateList());
-        dateField.setCellFactory(param -> new CustomDateCell(dateField));
+        dateField.setCellFactory(param -> new CustomDateCell(dateField, dailyRoutineWrapper.getLocalDateList()));
         if (dailyRoutineWrapper.getLocalDateList().size() > 0)
             dateField.setDate(dailyRoutineWrapper.getLocalDateList().get(0));
 
         detailList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        detailList.setCellFactory(TextFieldListCell.forListView());
+        detailList.setCellFactory(param -> new CustomListCell(new StringConverter<String>() {
+            @Override
+            public String toString(String object) {
+                return object.trim();
+            }
+
+            @Override
+            public String fromString(String string) {
+                return string.trim();
+            }
+        }));
         detailList.setItems(dailyRoutineWrapper.getAppointmentProperty().getDetailListProperty());
 
         detailList.setOnKeyPressed(event -> {
