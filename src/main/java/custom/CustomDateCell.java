@@ -3,6 +3,7 @@ package custom;
 import com.calendarfx.view.YearMonthView;
 import javafx.scene.input.*;
 
+import javax.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -16,26 +17,38 @@ public class CustomDateCell extends YearMonthView.DateCell {
     private List<LocalDate> highlightedDates;
 
     private String standardStyle;
-    private String selectedStyle = "-fx-background-color: #17A2B8;";
-    private String highlightedStyle = "-fx-background-color: #d75466;";
 
-    public CustomDateCell(YearMonthView datePicker, List<LocalDate> selectedDate) {
+    private LocalDate min, max;
+
+    public CustomDateCell(YearMonthView datePicker, List<LocalDate> selectedDate, @Nullable LocalDate min, @Nullable LocalDate max) {
         this.datePicker = datePicker;
         this.selectedDates = selectedDate;
         highlightedDates = new ArrayList<>();
 
         standardStyle = getStyle();
 
+        this.min = min;
+        this.max = max;
+
+        if (this.min == null)
+            this.min = LocalDate.now();
+
         setup();
     }
 
-    public CustomDateCell(YearMonthView datePicker, List<LocalDate> selectedDates, List<LocalDate> highlightedDates) {
+    public CustomDateCell(YearMonthView datePicker, List<LocalDate> selectedDates, List<LocalDate> highlightedDates, @Nullable LocalDate min, @Nullable LocalDate max) {
         this.datePicker = datePicker;
         this.selectedDates = selectedDates;
         this.highlightedDates = new ArrayList<>();
         this.highlightedDates.addAll(highlightedDates);
 
         standardStyle = getStyle();
+
+        this.min = min;
+        this.max = max;
+
+        if (this.min == null)
+            this.min = LocalDate.now();
 
         setup();
     }
@@ -44,12 +57,15 @@ public class CustomDateCell extends YearMonthView.DateCell {
     protected void update(LocalDate date) {
         super.update(date);
 
-        setDisable(date.isBefore(LocalDate.now()));
+        setDisable(date.isBefore(min));
+
+        if (max != null)
+            setDisable(date.isAfter(max));
 
         if (datePicker.getSelectedDates().contains(date)) {
-            setStyle(selectedStyle);
+            setStyle("-fx-background-color: #008B8B;");
         } else if (highlightedDates.contains(date)){
-            setStyle(highlightedStyle);
+            setStyle("-fx-background-color: #d75466;");
         } else {
             setStyle(standardStyle);
         }

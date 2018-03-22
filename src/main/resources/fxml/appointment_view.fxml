@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AppointmentController">
+   <children>
+      <VBox alignment="CENTER_LEFT">
+         <children>
+            <JFXTextField fx:id="titleField" focusColor="#31aba2" labelFloat="true" promptText="Titel" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="Lucida Sans Unicode" size="12.0" />
+               </font>
+            </JFXTextField>
+         </children>
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
+      </VBox>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <JFXDatePicker fx:id="datePicker" defaultColor="#31aba2" showWeekNumbers="true" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <JFXTimePicker fx:id="timePicker" defaultColor="#31aba2" editable="true" />
+               </children>
+               <HBox.margin>
+                  <Insets left="50.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+         <children>
+            <JFXButton fx:id="addDetailButton" buttonType="RAISED" style="-fx-background-color: e5e5e5;" text="Stichwort hinzufügen" textAlignment="CENTER" textFill="#726b6b" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="Lucida Sans Unicode" size="14.0" />
+               </font>
+               <ripplerFill>
+                  <LinearGradient endX="1.0" endY="1.0" startX="0.580952380952381">
+                     <stops>
+                        <Stop color="#828094" />
+                        <Stop color="#9a9a9a" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </ripplerFill>
+            </JFXButton>
+         </children>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </VBox>
+      <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+         <children>
+            <JFXListView fx:id="detailsList" depth="1" editable="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="200.0" showTooltip="true" style="-fx-background-insets: 0; -jfx-expanded: true; -jfx-vertical-gap: 5;" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

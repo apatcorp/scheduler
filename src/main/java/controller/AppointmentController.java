@@ -1,43 +1,40 @@
 package controller;
 
 import com.calendarfx.model.Entry;
-import com.calendarfx.view.TimeField;
-import custom.CustomListCell;
+import com.jfoenix.controls.*;
+import custom.CustomJFXListCell;
 import data_structures.AppointmentProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class AppointmentDetailsController extends Controller {
+public class AppointmentController extends Controller {
 
     @FXML
-    TextField titleField;
+    JFXTextField titleField;
 
     @FXML
-    TimeField timeField;
+    JFXTimePicker timePicker;
 
     @FXML
-    DatePicker dateField;
+    JFXDatePicker datePicker;
 
     @FXML
-    ListView<String> detailList;
+    JFXButton addDetailButton;
 
     @FXML
-    Button addButton;
+    JFXListView<String> detailsList;
 
     private Entry<?> appointmentPropertyEntry;
     private AppointmentProperty appointment;
 
-    @Override
     public void setup (Entry<?> appointmentEntry) {
         if (appointment != null && appointmentEntry != null)
             reset();
@@ -45,41 +42,45 @@ public class AppointmentDetailsController extends Controller {
         appointmentPropertyEntry = appointmentEntry;
         appointment = (AppointmentProperty) Objects.requireNonNull(appointmentEntry).getUserObject();
 
-        timeField.setValue(appointment.getLocalTimeObjectProperty());
-        timeField.valueProperty().addListener(localTimeChangeListener);
+        timePicker.setIs24HourView(true);
+        timePicker.setConverter(new StringConverter<LocalTime>() {
+            @Override
+            public String toString(LocalTime object) {
+                return object.toString();
+            }
 
-        dateField.setValue(appointment.getLocalDateObjectProperty());
-        dateField.valueProperty().addListener(localDateChangeListener);
+            @Override
+            public LocalTime fromString(String string) {
+                return LocalTime.parse(string);
+            }
+        });
+        timePicker.setValue(appointment.getLocalTimeObjectProperty());
+        timePicker.valueProperty().addListener(localTimeChangeListener);
+
+        datePicker.setValue(appointment.getLocalDateObjectProperty());
+        datePicker.valueProperty().addListener(localDateChangeListener);
 
         titleField.textProperty().bindBidirectional(appointment.titleProperty());
 
-        detailList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        detailList.setCellFactory(param -> new CustomListCell(new StringConverter<String>() {
-            @Override
-            public String toString(String object) {
-                return object.trim();
-            }
+        detailsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        detailsList.setExpanded(true);
+        detailsList.setShowTooltip(false);
+        detailsList.setVerticalGap(5d);
 
-            @Override
-            public String fromString(String string) {
-                return string.trim();
-            }
-        }));
+        detailsList.setCellFactory(param -> new CustomJFXListCell());
+        detailsList.setItems(appointment.getDetailListProperty());
 
-        detailList.setItems(appointment.getDetailListProperty());
-
-        addButton.setOnAction(event -> {
-            detailList.getItems().add("");
-            detailList.scrollTo(detailList.getItems().size() - 1);
-            detailList.layout();
-            detailList.edit(detailList.getItems().size() - 1);
+        addDetailButton.setOnAction(event -> {
+            detailsList.getItems().add("");
+            detailsList.scrollTo(detailsList.getItems().size() - 1);
+            detailsList.edit(detailsList.getItems().size() - 1);
         });
     }
 
     private void reset () {
         titleField.textProperty().unbindBidirectional(appointment.titleProperty());
-        timeField.valueProperty().removeListener(localTimeChangeListener);
-        dateField.valueProperty().removeListener(localDateChangeListener);
+        timePicker.valueProperty().removeListener(localTimeChangeListener);
+        datePicker.valueProperty().removeListener(localDateChangeListener);
     }
 
     private ChangeListener<LocalTime> localTimeChangeListener = new ChangeListener<LocalTime>() {

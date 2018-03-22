@@ -54,6 +54,10 @@
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.25</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.jfoenix</groupId>
+            <artifactId>jfoenix</artifactId>
+            <version>8.0.3</version>
+        </dependency>
     </dependencies>
 </project>

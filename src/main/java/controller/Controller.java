@@ -2,7 +2,9 @@ package controller;
 
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.Entry;
+import com.jfoenix.controls.JFXDialog;
 import data_structures.DailyRoutine;
+import data_structures.DailyRoutineWrapper;
 
 import java.util.List;
 
@@ -10,9 +12,13 @@ public abstract class Controller {
 
     void setup() { }
 
-    void setup (Entry<?> entry) { }
-
     void setup (Calendar calendar) {}
 
-    void setup(List<DailyRoutine> dailyRoutines) {}
+    public void setup (Entry<?> entry) {}
+
+    public void setup (JFXDialog dialog, Calendar calendar) {}
+
+    void setup (List<DailyRoutine> dailyRoutines) {}
+
+    void setup (DailyRoutineWrapper dailyRoutineWrapper) {}
 }

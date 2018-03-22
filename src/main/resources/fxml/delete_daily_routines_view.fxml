@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.calendarfx.view.YearMonthView?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DeleteDailyRoutinesController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <YearMonthView fx:id="deletePicker" showToday="false" showWeekNumbers="false" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
+      <VBox alignment="CENTER" layoutX="10.0" layoutY="262.0" VBox.vgrow="ALWAYS">
+         <children>
+            <JFXButton fx:id="deleteRoutines" buttonType="RAISED" ripplerFill="#b92d2d" style="-fx-background-color: #E73131;" text="Tagesabläufe löschen" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Lucida Sans Unicode" size="13.0" />
+               </font>
+            </JFXButton>
+         </children>
+         <VBox.margin>
+            <Insets bottom="30.0" top="10.0" />
+         </VBox.margin>
+      </VBox>
+   </children>
+</VBox>

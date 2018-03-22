@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.calendarfx.view.YearMonthView?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="450.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NewEntryDetailsController">
+   <children>
+      <VBox alignment="CENTER_LEFT">
+         <children>
+            <JFXTextField fx:id="titleField" focusColor="#31aba2" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="Lucida Sans Unicode" size="12.0" />
+               </font>
+            </JFXTextField>
+         </children>
+         <VBox.margin>
+            <Insets left="5.0" right="5.0" top="5.0" />
+         </VBox.margin>
+      </VBox>
+      <HBox>
+         <children>
+            <VBox>
+               <children>
+                  <JFXTimePicker fx:id="timePicker" defaultColor="#31aba2" editable="true" />
+                  <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <JFXButton fx:id="addDetailButton" buttonType="RAISED" style="-fx-background-color: e5e5e5;" text="Stichwort hinzufügen" textAlignment="CENTER" textFill="#726b6b">
+                           <font>
+                              <Font name="Lucida Sans Unicode" size="13.0" />
+                           </font>
+                           <ripplerFill>
+                              <LinearGradient endX="1.0" endY="1.0" startX="0.580952380952381">
+                                 <stops>
+                                    <Stop color="#828094" />
+                                    <Stop color="#9a9a9a" offset="1.0" />
+                                 </stops>
+                              </LinearGradient>
+                           </ripplerFill>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </JFXButton>
+                     </children>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <YearMonthView fx:id="detailDatePicker" showToday="false" showWeekNumbers="false" VBox.vgrow="ALWAYS" />
+               </children>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+      <VBox>
+         <children>
+            <JFXListView fx:id="detailsList" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" prefHeight="200.0" style="-fx-background-insets: 0; -fx-background-color: white;" verticalGap="5.0" />
+         </children>
+      </VBox>
+   </children>
+</VBox>

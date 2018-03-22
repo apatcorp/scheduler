@@ -3,10 +3,11 @@ package custom;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.popover.PopOverContentPane;
 import com.calendarfx.view.popover.PopOverTitledPane;
-import controller.AppointmentDetailsController;
+import controller.Controller;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
-import org.controlsfx.control.PopOver;
-import utility.ScreenHandler;
+
+import java.io.IOException;
 
 public class CustomEntryPopover extends PopOverContentPane {
 
@@ -14,14 +15,20 @@ public class CustomEntryPopover extends PopOverContentPane {
 
         System.out.println(entry.getUserObject().toString());
 
-        ScreenHandler.ScreenInfo screenInfo = ScreenHandler.getInstance().getScreenInfo("AppointmentDetails");
-        Pane pane = screenInfo.getPane();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/appointment_view.fxml"));
+        try {
+            Pane pane = fxmlLoader.load();
 
-        PopOverTitledPane popOverTitledPane = new PopOverTitledPane("Termin", pane);
-        AppointmentDetailsController appointmentDetailsController = (AppointmentDetailsController)screenInfo.getController();
-        appointmentDetailsController.setup(entry);
+            PopOverTitledPane popOverTitledPane = new PopOverTitledPane("Termin", pane);
+            Controller controller = fxmlLoader.getController();
+            controller.setup(entry);
 
-        getPanes().addAll(popOverTitledPane);
-        setExpandedPane(popOverTitledPane);
+            getPanes().clear();
+            getPanes().addAll(popOverTitledPane);
+            setExpandedPane(popOverTitledPane);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -4,31 +4,39 @@ import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
+import com.jfoenix.controls.JFXDialog;
 import custom.CustomContextMenu;
 import custom.CustomEntryPopover;
 import custom.NewAppointmentEntry;
 import data_structures.Appointment;
 import data_structures.AppointmentProperty;
 import data_structures.DailyRoutine;
-import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import main.Main;
-import org.controlsfx.control.PopOver;
-import utility.ScreenHandler;
+import javafx.stage.Stage;
 
-import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.*;
 
 public class MainSceneController extends Controller  {
 
     @FXML
-    public MenuItem newAppointment;
+    private MenuItem newAppointment;
 
     @FXML
-    public VBox parent;
+    private MenuItem deleteAppointments;
+
+    @FXML
+    private VBox parent;
+
+    @FXML
+    private StackPane root;
 
     @Override
     public void setup(List<DailyRoutine> dailyRoutines) {
@@ -75,20 +83,51 @@ public class MainSceneController extends Controller  {
         calendarView.setContextMenuCallback(param -> new CustomContextMenu(param.getZonedDateTime(), param.getCalendar()));
 
         newAppointment.setOnAction(event -> {
-            PopOver popOver = new PopOver();
-            ScreenHandler.ScreenInfo screenInfo = ScreenHandler.getInstance().getScreenInfo("NewDailyRoutine");
-            Pane pane = screenInfo.getPane();
-            Controller controller = screenInfo.getController();
-            controller.setup(calendar);
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/new_entries_view.fxml"));
+            try {
+                SplitPane pane = fxmlLoader.load();
+                Controller controller = fxmlLoader.getController();
+                controller.setup(calendar);
 
-            popOver.setAnimated(true);
-            popOver.setArrowSize(0);
-            popOver.setTitle("Neuer Tagesablauf");
-            popOver.setCloseButtonEnabled(true);
-            popOver.setHeaderAlwaysVisible(true);
+                // setup dialog window
+                Stage stage = new Stage();
+                stage.setTitle("Neue Termine erstellen");
+                stage.setAlwaysOnTop(true);
+                stage.setResizable(true);
+                stage.setMinWidth(pane.getWidth());
+                stage.setMinHeight(pane.getHeight());
 
-            popOver.setContentNode(pane);
-            popOver.show(Main.scene.getWindow());
+                Scene scene = new Scene(pane);
+                scene.setRoot(pane);
+                stage.setScene(scene);
+                stage.show();
+
+                stage.setMinWidth(pane.getWidth());
+                stage.setMinHeight(pane.getHeight());
+                scene.getWindow().sizeToScene();
+
+                SplitPane.setResizableWithParent(pane, Boolean.TRUE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        deleteAppointments.setOnAction(event -> {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/delete_daily_routines_view.fxml"));
+            try {
+                JFXDialog dialog = new JFXDialog();
+
+                Pane pane = fxmlLoader.load();
+                Controller controller = fxmlLoader.getController();
+                controller.setup(dialog, calendar);
+
+                dialog.setDialogContainer(root);
+                dialog.setContent(pane);
+                dialog.show(root);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 }

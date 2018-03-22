@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.calendarfx.view.YearMonthView?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.32356020942408376, 0.5602094240837696" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="520.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NewEntriesController">
+   <items>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="300.0" style="-fx-background-color: white;">
+         <children>
+            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" style="-fx-background-color: e7e7e7;">
+               <children>
+                  <Label text="Datumsauswahl" textFill="#727272" wrapText="true">
+                     <font>
+                        <Font name="Lucida Sans Unicode" size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="10.0" top="5.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <YearMonthView fx:id="datePicker" enableHyperlinks="false" showToday="false" showWeekNumbers="false" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                  </YearMonthView>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <JFXToggleButton fx:id="templateToggle" size="8.0" text="Vorlage aus Terminen auswählen" textFill="#727272" unToggleColor="WHITE" unToggleLineColor="#c3c3c3">
+                     <font>
+                        <Font name="Lucida Sans Unicode" size="12.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </JFXToggleButton>
+               </children>
+            </HBox>
+            <HBox fx:id="templateBox" alignment="CENTER_LEFT" visible="false">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+               <children>
+                  <JFXDatePicker fx:id="templateDatePicker" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </JFXDatePicker>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <JFXButton fx:id="createEntriesButton" buttonType="RAISED" ripplerFill="#439440" style="-fx-background-color: #59b857;" text="Termine erstellen" textAlignment="CENTER" textFill="#fcfcfc">
+                     <font>
+                        <Font name="Lucida Sans Unicode" size="14.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="200.0" style="-fx-background-color: white;">
+         <children>
+            <HBox alignment="CENTER_LEFT" style="-fx-background-color: e7e7e7;">
+               <children>
+                  <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label text="Termine" textFill="#727272" wrapText="true">
+                           <font>
+                              <Font name="Lucida Sans Unicode" size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="10.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                     <children>
+                        <JFXButton fx:id="newAppointmentButton" buttonType="RAISED" contentDisplay="CENTER" graphicTextGap="0.0" lineSpacing="1.0" prefHeight="28.0" prefWidth="28.0" ripplerFill="#2d7b7c" style="-fx-background-color: #51c2c5; -fx-background-radius: 28;" text="+" textAlignment="CENTER" textFill="#f5f5f5">
+                           <VBox.margin>
+                              <Insets bottom="2.0" right="5.0" top="1.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="Lucida Sans Unicode" size="12.0" />
+                           </font>
+                        </JFXButton>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <JFXListView fx:id="appointmentsList" editable="true" style="-fx-background-insets: 0; -fx-background-color: white;" verticalGap="5.0" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </VBox.margin>
+            </JFXListView>
+         </children>
+      </VBox>
+      <VBox fx:id="detailViewBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="450.0" style="-fx-background-color: white;">
+         <children>
+            <HBox alignment="CENTER_LEFT" style="-fx-background-color: e7e7e7;">
+               <children>
+                  <Label text="Detailübersicht" textFill="#727272" wrapText="true">
+                     <font>
+                        <Font name="Lucida Sans Unicode" size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="10.0" top="5.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </items>
+</SplitPane>

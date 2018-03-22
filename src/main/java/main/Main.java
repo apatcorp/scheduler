@@ -1,35 +1,40 @@
 package main;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import utility.ScreenHandler;
+
+import java.io.IOException;
 
 
 public class Main extends Application{
     public static Scene scene;
 
     public void start(Stage primaryStage) {
-
         setUserAgentStylesheet(STYLESHEET_MODENA);
 
-        ScreenHandler screenHandler = ScreenHandler.getInstance();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/loading_screen_view.fxml"));
+        try {
+            Pane pane = fxmlLoader.load();
+            scene = new Scene(pane, 1280, 800);
+            scene.getStylesheets().add("css/CustomStyle.css");
 
-        screenHandler.add("LoadingScreen", "fxml/loading_screen_view.fxml");
-        screenHandler.add("Main", "fxml/main_scene_view.fxml");
-        screenHandler.add("AppointmentDetails", "fxml/appointment_details_view.fxml");
-        screenHandler.add("NewDailyRoutine", "fxml/new_daily_routines_view.fxml");
-        screenHandler.add("NewAppointmentDetail", "fxml/new_appointment_detail_view.fxml");
+            primaryStage.setTitle("Scheduler");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-        scene = new Scene(screenHandler.getScreenInfo("LoadingScreen").getPane(), 1280, 800);
-        scene.getStylesheets().add("css/CustomStyle.css");
+    @Override
+    public void stop() throws Exception {
 
-        primaryStage.setTitle("Scheduler");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+
+        super.stop();
     }
 
     public static void main(String[] args) {
